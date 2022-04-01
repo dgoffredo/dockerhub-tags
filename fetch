@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -x
+set -e
+
+page=1
+next="https://hub.docker.com/v2/repositories/library/nginx/tags/?page=$page"
+while [ "$next" != 'null' ]; do
+    out="pages/page_$page.json"
+    >"$out" curl --silent "$next"
+    page=$((page + 1))
+    next=$(<"$out" jq --raw-output .next)
+done
+
